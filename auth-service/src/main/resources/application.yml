@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/digital_notebook
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  hikari:
+    connectionTimeout: 20000
+    maximumPoolSize: 5
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+      format_sql: true
+      use_sql_comments: true
+    show-sql: false
+  application:
+    name: auth-service
+server:
+  port: 8082
+  servlet:
+    context-path: /auth/v1
+
+auth:
+  service:
+    jwt-access-token-expiration: 200
+    jwt-refresh-token-expiration: 600
+    jwt-secret-key: b2857b9a29cf4fc990ec58e7f23f98cf7577e36b1cd74ecda34ceb575bc5bec2
+
+generic:
+  crypto:
+    internal-key: 840ba26c33fd4873a56bfb5d1d08a6b729922ee239ed424dbbafce61e45eb3aa

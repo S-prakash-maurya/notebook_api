@@ -1,0 +1,53 @@
+server:
+  port: 8080
+gateway:
+  route:
+    #    portal-service:
+    #      endpoint: http://localhost:8081
+    #      path: /portal/**
+    #      id: portal-service
+    auth-service:
+      endpoint: http://auth-service:8082
+      path: /auth/**
+      id: auth-service
+  #    chat-service:
+  #      endpoint: http://localhost:8083
+  #      path: /chat/**
+  #      id: chat-service
+  #    chat-socket-service:
+  #      endpoint: ws://localhost:8083
+  #      path: /chat/**
+  #      id: chat-socket-service
+  security:
+    expire-milliseconds: 43200000
+    refresh-token-expire-milliseconds: 604800000
+  skip-auth-enabled: true # change this to enable authentication
+
+#authentication-url: http://localhost:35000
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"
+
+spring:
+  main:
+    #    allow-bean-definition-overriding: true
+    web-application-type: reactive
+  application:
+    name: micro-gateway
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+logging:
+  level:
+    io.github.resilience4j.circuitbreaker: DEBUG
+    org.springframework.cloud.gateway.filter.factory: DEBUG
+    root: INFO
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  file:
+    name: ./logs/logs.log

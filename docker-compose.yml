@@ -1,0 +1,125 @@
+# version: "3.9"
+
+# services:
+#   postgres:
+#     image: postgres:17-alpine
+#     container_name: digital-notebook-postgres
+
+#     environment:
+#       POSTGRES_DB: digital_notebook
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+
+#     ports:
+#       - "5432:5432"
+
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+#     healthcheck:
+#       test: [ "CMD-SHELL", "pg_isready -U postgres -d digital_notebook" ]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+
+#     restart: unless-stopped
+
+#   auth-service:
+#     build:
+#       context: ./auth-service
+
+#     container_name: auth-service
+
+#     ports:
+#       - "8082:8082"
+
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/digital_notebook
+#       SPRING_DATASOURCE_USERNAME: postgres
+#       SPRING_DATASOURCE_PASSWORD: postgres
+
+#     depends_on:
+#       postgres:
+#         condition: service_healthy
+
+#     restart: unless-stopped
+
+#   api-gateway:
+#     build:
+#       context: ./api-gateway
+
+#     container_name: api-gateway
+
+#     ports:
+#       - "8787:8787"
+
+#     depends_on:
+#       - auth-service
+
+#     restart: unless-stopped
+
+# volumes:
+#   postgres_data:
+
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: digital-notebook-postgres
+
+    environment:
+      POSTGRES_DB: digital_notebook
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d digital_notebook"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    restart: unless-stopped
+
+  auth-service:
+    build:
+      context: ./auth-service
+
+    container_name: auth-service
+
+    ports:
+      - "8082:8082"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/digital_notebook
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+
+    container_name: api-gateway
+
+    ports:
+      - "8787:8080"
+
+    depends_on:
+      - auth-service
+
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

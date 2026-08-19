@@ -1,0 +1,4 @@
+rootProject.name = 'org-chat'
+include 'auth-service'
+include 'api-gateway'
+include 'chat-service'
