@@ -35,7 +35,7 @@ public class UserService extends GenericService<UserReqDto, UserResDto, UserEnti
         UserEntity userEntity = GenericMapper.map(createReq, UserEntity.class);
         userEntity
                 .setPassword(cryptoService.encrypt(userEntity.getPassword()))
-                .setStatus(UserStatus.VERIFICATION_PENDING)
+                .setStatus(UserStatus.ACTIVE)
                 .setRole(UserRole.MEMBER);
         return super.create(userEntity);
     }
