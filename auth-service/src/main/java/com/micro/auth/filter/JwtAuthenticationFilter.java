@@ -4,6 +4,7 @@ import com.generic.service.exception.GenericException;
 import com.generic.service.model.GenericLoggedInUserData;
 import com.generic.service.util.RequestContext;
 import com.micro.auth.constants.Constants;
+import com.micro.auth.dto.GenericLoggedInUserDataImpl;
 import com.micro.auth.dto.res.UserResDto;
 import com.micro.auth.entity.JwtTokenEntity;
 import com.micro.auth.enums.UserStatus;
@@ -50,7 +51,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (userResDto.getStatus() != UserStatus.ACTIVE) {
                     throw new GenericException(HttpStatus.LOCKED.value(), "User id not active");
                 }
-                GenericLoggedInUserData genericLoggedInUserData = GenericLoggedInUserData.builder().userId(userResDto.getId()).tenantId(userResDto.getTenantId()).build();
+                GenericLoggedInUserDataImpl genericLoggedInUserData = new GenericLoggedInUserDataImpl();
+                genericLoggedInUserData.setJwtTokenId(UUID.fromString(jwtTokenId));
+                genericLoggedInUserData.setUserId(userResDto.getId());
+                genericLoggedInUserData.setTenantId(userResDto.getTenantId());
                 RequestContext.setUserFromRequestContextHolder(genericLoggedInUserData);
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + userResDto.getRole());
                 Authentication authentication = new UsernamePasswordAuthenticationToken(genericLoggedInUserData, null, Collections.singletonList(authority));

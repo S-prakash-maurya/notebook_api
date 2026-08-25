@@ -51,4 +51,10 @@ public class AuthenticationService {
         jwtTokenService.deleteHard(jwtTokenEntity.getId());
         return jwtTokenProvider.createToken(user.getId().toString());
     }
+
+    public void logout(UUID tokenId) {
+        JwtTokenEntity jwtTokenEntity = jwtTokenService.getByField("jwtTokenId", tokenId).orElseThrow(() -> new GenericException(HttpStatus.UNAUTHORIZED.value(), "JWT Session not found"));
+        jwtTokenService.deleteHard(jwtTokenEntity.getId());
+        log.info("Session {} logout successfully", jwtTokenEntity.getJwtTokenId());
+    }
 }
