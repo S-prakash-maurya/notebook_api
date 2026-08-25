@@ -1,0 +1,26 @@
+cd /d D:\notebook_api
+
+gradlew.bat clean build -x test
+
+docker compose down
+
+docker compose build --no-cache
+
+docker compose up -d
+
+docker compose ps
+
+
+Docker container rebuild/restart
+
+
+docker compose build auth-service
+docker compose up -d auth-service
+ 
+database 
+table 
+docker exec -it digital-notebook-postgres psql -U postgres -d digital_notebook -c "SELECT schemaname, relname AS table_name, n_live_tup AS rows FROM pg_stat_user_tables ORDER BY relname;"
+user 
+docker exec -it digital-notebook-postgres psql -U postgres -d digital_notebook -c "SELECT * FROM user_entity;"
+subject 
+docker exec -it digital-notebook-postgres psql -U postgres -d digital_notebook -c "SELECT * FROM subject_entity;"
