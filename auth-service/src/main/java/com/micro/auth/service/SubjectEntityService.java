@@ -6,6 +6,7 @@ import com.generic.service.mapper.GenericMapper;
 import com.generic.service.repository.GenericRepository;
 import com.generic.service.service.impl.GenericService;
 import com.generic.service.util.RequestContext;
+import com.micro.auth.constants.Constants;
 import com.micro.auth.dto.req.SubjectEntityReqDto;
 import com.micro.auth.entity.SubjectEntity;
 import com.micro.auth.repository.SubjectRepository;
@@ -33,6 +34,21 @@ public class SubjectEntityService extends GenericService<SubjectEntityReqDto, Su
     @Override
     public GenericPaginationRes<SubjectEntity> getAllPage(Pageable pageable) {
         final var tEntityPage = subjectRepository.findByUserIdAndDeletedFalse(RequestContext.getUserFromRequestContextHolder().getUserId(), pageable);
-        return GenericPaginationRes.<SubjectEntity>builder().totalPages(tEntityPage.getTotalPages()).totalElements(tEntityPage.getNumberOfElements()).pageSize((long)tEntityPage.getSize()).pageNumber(tEntityPage.getNumber()).lastPage(tEntityPage.isLast()).content(tEntityPage.getContent().stream().map((tEntity) -> GenericMapper.map(tEntity, SubjectEntity.class)).toList()).build();
+        return GenericPaginationRes.<SubjectEntity>builder().totalPages(tEntityPage.getTotalPages()).totalElements(tEntityPage.getNumberOfElements()).pageSize((long) tEntityPage.getSize()).pageNumber(tEntityPage.getNumber()).lastPage(tEntityPage.isLast()).content(tEntityPage.getContent().stream().map((tEntity) -> GenericMapper.map(tEntity, SubjectEntity.class)).toList()).build();
+    }
+
+    @Override
+    public SubjectEntity update(SubjectEntityReqDto updateReq, UUID id) {
+        updateReq.setUserId(RequestContext.getUserFromRequestContextHolder().getUserId());
+        SubjectEntity subjectEntity = this.getById(id);
+        if (!subjectEntity.getUserId().equals(updateReq.getUserId())) {
+            throw new GenericException(HttpStatus.EXPECTATION_FAILED.value(), Constants.ANOTHER_ACCESS_ERR_MESSAGE);
+        }
+        return super.update(updateReq, id);
+    }
+
+    public SubjectEntity deleteById(UUID id) {
+        SubjectEntity subjectEntity = this.getById(id);
+        return super.deleteHard(subjectEntity.getId());
     }
 }

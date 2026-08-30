@@ -36,7 +36,7 @@ public class SubjectEntity extends GenericEntity {
     @Column(name = "user_id", nullable = false, columnDefinition = "uuid")
     private UUID userId;
 
-    @Column(nullable = false, length = 120)
+    @Column(nullable = false, length = 120, unique = true)
     private String title;
 
     @Column(length = 20)
