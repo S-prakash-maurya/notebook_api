@@ -17,17 +17,27 @@ jobs:
     steps:
       - name: Mirror Source Repository to Target Repository
         env:
-          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+          SOURCE_TOKEN: ${{ secrets.SOURCE_TOKEN }}
+          TARGET_TOKEN: ${{ secrets.TARGET_TOKEN }}
+
           GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
           GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
-          SOURCE_REPO: ${{ github.repository }}
+
+          SOURCE_REPO: "DevRootAccess/note-book-api-services"
           TARGET_REPO: "S-prakash-maurya/notebook_api"
+
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+
         run: |
           set -e
 
           echo "========================================"
           echo "Starting Repository Mirror"
           echo "========================================"
+
+          echo "Source Repository: $SOURCE_REPO"
+          echo "Target Repository: $TARGET_REPO"
+          echo "Source Commit: $SOURCE_SHA"
 
           # ---------------------------------------------------------
           # Git configuration
@@ -37,7 +47,7 @@ jobs:
           git config --global user.email "$GIT_USER_EMAIL"
 
           # ---------------------------------------------------------
-          # Temporary workspace
+          # Temporary directory
           # ---------------------------------------------------------
 
           WORK_DIR="$(mktemp -d)"
@@ -45,30 +55,28 @@ jobs:
 
           cleanup() {
             echo ""
-            echo "Cleaning up..."
+            echo "========================================"
+            echo "Cleaning up"
+            echo "========================================"
 
             if [ -d "$TARGET_DIR/.git" ]; then
               cd "$TARGET_DIR" || true
 
-              # Remove source remote containing authentication token
+              # Remove remotes containing credentials
               git remote remove source 2>/dev/null || true
-
-              # Remove origin remote containing authentication token
               git remote remove origin 2>/dev/null || true
 
-              # Remove local Git config
+              # Remove Git config containing credentials
               rm -f .git/config
             fi
 
-            # Remove entire temporary repository
+            # Delete entire temporary workspace
             rm -rf "$WORK_DIR"
 
             echo "Cleanup completed."
           }
 
           trap cleanup EXIT
-
-          echo "Working directory: $WORK_DIR"
 
           # ---------------------------------------------------------
           # Clone TARGET repository
@@ -78,23 +86,23 @@ jobs:
           echo "Cloning target repository..."
 
           git clone \
-            "https://x-access-token:${MIRROR_TOKEN}@github.com/${TARGET_REPO}.git" \
+            "https://x-access-token:${TARGET_TOKEN}@github.com/${TARGET_REPO}.git" \
             "$TARGET_DIR"
 
           cd "$TARGET_DIR"
 
           # ---------------------------------------------------------
-          # Configure SOURCE remote
+          # Add SOURCE repository
           # ---------------------------------------------------------
 
           echo ""
           echo "Adding source repository..."
 
           git remote add source \
-            "https://x-access-token:${MIRROR_TOKEN}@github.com/${SOURCE_REPO}.git"
+            "https://x-access-token:${SOURCE_TOKEN}@github.com/${SOURCE_REPO}.git"
 
           # ---------------------------------------------------------
-          # Fetch repositories
+          # Fetch target
           # ---------------------------------------------------------
 
           echo ""
@@ -102,10 +110,28 @@ jobs:
 
           git fetch origin --prune
 
+          # ---------------------------------------------------------
+          # Fetch source
+          # ---------------------------------------------------------
+
           echo ""
           echo "Fetching source repository..."
 
           git fetch source main
+
+          # ---------------------------------------------------------
+          # Verify source commit
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Verifying source commit..."
+
+          if git cat-file -e "${SOURCE_SHA}^{commit}" 2>/dev/null; then
+            echo "Source commit exists."
+          else
+            echo "ERROR: Source commit not found."
+            exit 1
+          fi
 
           # ---------------------------------------------------------
           # Check target main branch
@@ -123,20 +149,21 @@ jobs:
           else
 
             echo "Target main branch does not exist."
-            echo "Creating target main branch..."
 
             git checkout -b main
 
           fi
 
           # ---------------------------------------------------------
-          # Merge source main
+          # Merge exact source commit
           # ---------------------------------------------------------
 
           echo ""
-          echo "Merging source/main into target/main..."
+          echo "========================================"
+          echo "Merging Source → Target"
+          echo "========================================"
 
-          if git merge source/main \
+          if git merge "$SOURCE_SHA" \
             --allow-unrelated-histories \
             --no-edit; then
 
@@ -146,6 +173,7 @@ jobs:
 
             echo ""
             echo "ERROR: Merge conflict detected."
+
             echo ""
             echo "Conflicting files:"
 
@@ -157,14 +185,17 @@ jobs:
             git merge --abort || true
 
             exit 1
+
           fi
 
           # ---------------------------------------------------------
-          # Push target main
+          # Push TARGET main
           # ---------------------------------------------------------
 
           echo ""
-          echo "Pushing merged main branch..."
+          echo "========================================"
+          echo "Pushing Target Repository"
+          echo "========================================"
 
           git push origin main:main
 
@@ -172,16 +203,13 @@ jobs:
           echo "Push successful."
 
           # ---------------------------------------------------------
-          # Explicit cleanup after successful push
+          # Remove Git configuration
           # ---------------------------------------------------------
 
-          echo ""
-          echo "Removing Git remotes..."
+          git remote remove source 2>/dev/null || true
+          git remote remove origin 2>/dev/null || true
 
-          git remote remove source || true
-          git remote remove origin || true
-
-          echo "Git remotes removed."
+          rm -f .git/config
 
           echo ""
           echo "========================================"
