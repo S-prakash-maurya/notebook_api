@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,6 +12,27 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate Version
+        id: version
+        run: |
+          VERSION="${GITHUB_SHA::7}"
+
+          echo "VERSION=$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Update OpenAPI Version
+        run: |
+          FILE="auth-service/src/main/java/com/micro/auth/config/OpenApiConfig.java"
+
+          echo "Updating OpenAPI version to: $VERSION"
+
+          sed -i "s/\.version(\"[^\"]*\")/.version(\"$VERSION\")/" "$FILE"
+
+          echo "Updated version:"
+          grep -n '\.version(' "$FILE"
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -32,14 +52,17 @@ jobs:
       - name: Build Docker Image
         id: build_image
         run: |
-          docker build -t devshivmohan/note-book-api-services:latest ./auth-service
-          
-          # Capture IMAGE ID
+          docker build \
+            -t devshivmohan/note-book-api-services:latest \
+            ./auth-service
+
           IMAGE_ID=$(docker images -q devshivmohan/note-book-api-services:latest)
+
           echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
 
       - name: Push Docker Image
-        run: docker push devshivmohan/note-book-api-services:latest
+        run: |
+          docker push devshivmohan/note-book-api-services:latest
 
       - name: List Docker Images
         run: docker images
@@ -57,16 +80,20 @@ jobs:
           server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✅ Note Book Service Backend Pipeline Success | Image ID: ${{ env.IMAGE_ID }}"
+          subject: "✅ Note Book Service Backend Pipeline Success | Version: ${{ env.VERSION }} | Image ID: ${{ env.IMAGE_ID }}"
           to: ntrstark@gmail.com,sprakash8317@gmail.com,yadavramprasad563@gmail.com,amansingh3897702@gmail.com,rathourm99@gmail.com
           from: GitHub Actions Alerts Generator
           body: |
-            🚀 Docker image pushed Successful, Please take pull with image id - ${{ env.IMAGE_ID }}
+            🚀 Docker image pushed successfully.
 
             📦 Image Details:
             - Repository: devshivmohan/note-book-api-services
             - Tag: latest
             - Image ID: ${{ env.IMAGE_ID }}
+
+            🔖 Application Version:
+            - Version: ${{ env.VERSION }}
+            - Commit: ${{ github.sha }}
 
             🔧 Build Info:
             - Repo: ${{ github.repository }}
@@ -74,4 +101,4 @@ jobs:
             - Triggered by: ${{ github.actor }}
             - Commit message: ${{ github.event.head_commit.message }}
 
-            🕒 Time: ${{ github.run_id }}
+            🕒 Run ID: ${{ github.run_id }}
