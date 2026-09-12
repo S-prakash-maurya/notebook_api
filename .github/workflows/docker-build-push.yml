@@ -1,0 +1,76 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '22'
+
+      - name: Build JAR
+        run: ./gradlew clean build -x test
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        id: build_image
+        run: |
+          docker build -t devshivmohan/note-book-api-services:latest ./auth-service
+          
+          # Capture IMAGE ID
+          IMAGE_ID=$(docker images -q devshivmohan/note-book-api-services:latest)
+          echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
+
+      - name: Push Docker Image
+        run: docker push devshivmohan/note-book-api-services:latest
+
+      - name: List Docker Images
+        run: docker images
+
+      - name: Cleanup Docker
+        run: |
+          docker system prune -af
+          docker builder prune -af
+
+      - name: Send Email Notification
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Note Book Service Backend Pipeline Success | Image ID: ${{ env.IMAGE_ID }}"
+          to: ntrstark@gmail.com,sprakash8317@gmail.com,yadavramprasad563@gmail.com,amansingh3897702@gmail.com,rathourm99@gmail.com
+          from: GitHub Actions Alerts Generator
+          body: |
+            🚀 Docker image pushed Successful, Please take pull with image id - ${{ env.IMAGE_ID }}
+
+            📦 Image Details:
+            - Repository: devshivmohan/note-book-api-services
+            - Tag: latest
+            - Image ID: ${{ env.IMAGE_ID }}
+
+            🔧 Build Info:
+            - Repo: ${{ github.repository }}
+            - Branch: ${{ github.ref_name }}
+            - Triggered by: ${{ github.actor }}
+            - Commit message: ${{ github.event.head_commit.message }}
+
+            🕒 Time: ${{ github.run_id }}
