@@ -7,7 +7,7 @@ on:
     types:
       - completed
     branches:
-      - main-exclude
+      - main
 
 jobs:
   mirror:
