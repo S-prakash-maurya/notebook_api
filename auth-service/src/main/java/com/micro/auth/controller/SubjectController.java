@@ -34,18 +34,18 @@ public class SubjectController {
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody SubjectEntityReqDto subjectEntityReqDto) {
-        if (subjectEntityReqDto.getIcon() != null && !storageService.isFilePathObjectExists(subjectEntityReqDto.getIcon())) {
-            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Icon does not exists");
-        }
+//        if (subjectEntityReqDto.getIcon() != null && !storageService.isFilePathObjectExists(subjectEntityReqDto.getIcon())) {
+//            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Icon does not exists");
+//        }
         subjectEntityReqDto.setUserId(RequestContext.getUserFromRequestContextHolder().getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(subjectEntityService.create(subjectEntityReqDto));
     }
 
     @PutMapping("/{subjectId}")
     public ResponseEntity<?> update(@PathVariable("subjectId") UUID id, @Valid @RequestBody SubjectEntityReqDto subjectEntityReqDto) {
-        if (subjectEntityReqDto.getIcon() != null && !storageService.isFilePathObjectExists(subjectEntityReqDto.getIcon())) {
-            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Icon does not exists");
-        }
+//        if (subjectEntityReqDto.getIcon() != null && !storageService.isFilePathObjectExists(subjectEntityReqDto.getIcon())) {
+//            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Icon does not exists");
+//        }
         return ResponseEntity.status(HttpStatus.OK).body(subjectEntityService.update(subjectEntityReqDto, id));
     }
 
