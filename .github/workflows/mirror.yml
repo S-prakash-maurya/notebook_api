@@ -15,19 +15,175 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Main Branch
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Push to Mirror Repository
+      - name: Mirror Source Repository to Target Repository
         env:
           MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          SOURCE_REPO: ${{ github.repository }}
+          TARGET_REPO: "S-prakash-maurya/notebook_api"
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          set -e
 
-          git remote add mirror https://x-access-token:${MIRROR_TOKEN}@github.com/S-prakash-maurya/notebook_api.git
+          echo "========================================"
+          echo "Starting Repository Mirror"
+          echo "========================================"
 
-          git push mirror main:main
+          # ---------------------------------------------------------
+          # Git configuration
+          # ---------------------------------------------------------
+
+          git config --global user.name "$GIT_USER_NAME"
+          git config --global user.email "$GIT_USER_EMAIL"
+
+          # ---------------------------------------------------------
+          # Temporary workspace
+          # ---------------------------------------------------------
+
+          WORK_DIR="$(mktemp -d)"
+          TARGET_DIR="$WORK_DIR/target"
+
+          cleanup() {
+            echo ""
+            echo "Cleaning up..."
+
+            if [ -d "$TARGET_DIR/.git" ]; then
+              cd "$TARGET_DIR" || true
+
+              # Remove source remote containing authentication token
+              git remote remove source 2>/dev/null || true
+
+              # Remove origin remote containing authentication token
+              git remote remove origin 2>/dev/null || true
+
+              # Remove local Git config
+              rm -f .git/config
+            fi
+
+            # Remove entire temporary repository
+            rm -rf "$WORK_DIR"
+
+            echo "Cleanup completed."
+          }
+
+          trap cleanup EXIT
+
+          echo "Working directory: $WORK_DIR"
+
+          # ---------------------------------------------------------
+          # Clone TARGET repository
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Cloning target repository..."
+
+          git clone \
+            "https://x-access-token:${MIRROR_TOKEN}@github.com/${TARGET_REPO}.git" \
+            "$TARGET_DIR"
+
+          cd "$TARGET_DIR"
+
+          # ---------------------------------------------------------
+          # Configure SOURCE remote
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Adding source repository..."
+
+          git remote add source \
+            "https://x-access-token:${MIRROR_TOKEN}@github.com/${SOURCE_REPO}.git"
+
+          # ---------------------------------------------------------
+          # Fetch repositories
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Fetching target repository..."
+
+          git fetch origin --prune
+
+          echo ""
+          echo "Fetching source repository..."
+
+          git fetch source main
+
+          # ---------------------------------------------------------
+          # Check target main branch
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Checking target main branch..."
+
+          if git ls-remote --exit-code --heads origin main >/dev/null 2>&1; then
+
+            echo "Target main branch exists."
+
+            git checkout main
+
+          else
+
+            echo "Target main branch does not exist."
+            echo "Creating target main branch..."
+
+            git checkout -b main
+
+          fi
+
+          # ---------------------------------------------------------
+          # Merge source main
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Merging source/main into target/main..."
+
+          if git merge source/main \
+            --allow-unrelated-histories \
+            --no-edit; then
+
+            echo "Merge successful."
+
+          else
+
+            echo ""
+            echo "ERROR: Merge conflict detected."
+            echo ""
+            echo "Conflicting files:"
+
+            git diff --name-only --diff-filter=U || true
+
+            echo ""
+            echo "Aborting merge..."
+
+            git merge --abort || true
+
+            exit 1
+          fi
+
+          # ---------------------------------------------------------
+          # Push target main
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Pushing merged main branch..."
+
+          git push origin main:main
+
+          echo ""
+          echo "Push successful."
+
+          # ---------------------------------------------------------
+          # Explicit cleanup after successful push
+          # ---------------------------------------------------------
+
+          echo ""
+          echo "Removing Git remotes..."
+
+          git remote remove source || true
+          git remote remove origin || true
+
+          echo "Git remotes removed."
+
+          echo ""
+          echo "========================================"
+          echo "Mirror completed successfully"
+          echo "========================================"
