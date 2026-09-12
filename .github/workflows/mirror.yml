@@ -1,0 +1,33 @@
+name: Mirror Main Branch
+
+on:
+  workflow_run:
+    workflows:
+      - "Build and Push Docker Image"
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  mirror:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Main Branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Push to Mirror Repository
+        env:
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git remote add mirror https://x-access-token:${MIRROR_TOKEN}@github.com/S-prakash-maurya/notebook_api.git
+
+          git push mirror main:main
