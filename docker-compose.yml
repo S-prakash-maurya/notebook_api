@@ -95,7 +95,8 @@ services:
 
     ports:
       - "8082:8082"
-
+    volumes:
+      - ./file-uploads:/app/file-uploads
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/digital_notebook
       SPRING_DATASOURCE_USERNAME: postgres

@@ -42,7 +42,7 @@ public class SubjectEntity extends GenericEntity {
     @Column(length = 20)
     private String color;
 
-    @Column(length = 60)
+    @Column(columnDefinition = "text")
     private String icon;
 
     @Column(name = "deleted_at")

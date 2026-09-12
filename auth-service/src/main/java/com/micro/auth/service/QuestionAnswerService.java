@@ -25,17 +25,22 @@ public class QuestionAnswerService extends GenericService<QuestionAnswerReqDto, 
     private final UserService userService;
     private final SubjectEntityService subjectEntityService;
     private final QuestionAnswerRepository questionAnswerRepository;
+    private final StorageService storageService;
 
-    public QuestionAnswerService(GenericRepository<QuestionAnswer> repository, LessonService lessonService, UserService userService, SubjectEntityService subjectEntityService, QuestionAnswerRepository questionAnswerRepository) {
+    public QuestionAnswerService(GenericRepository<QuestionAnswer> repository, LessonService lessonService, UserService userService, SubjectEntityService subjectEntityService, QuestionAnswerRepository questionAnswerRepository, StorageService storageService) {
         super(repository, QuestionAnswer.class, QuestionAnswer.class);
         this.lessonService = lessonService;
         this.userService = userService;
         this.subjectEntityService = subjectEntityService;
         this.questionAnswerRepository = questionAnswerRepository;
+        this.storageService = storageService;
     }
 
 
     public QuestionAnswer create(UUID subjectId, QuestionAnswerReqDto createReq) {
+        if (createReq.getAnswerImageUrl() != null && !storageService.isFilePathObjectExists(createReq.getAnswerImageUrl())) {
+            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Answer image url does not exists");
+        }
         final var user = userService.getById(RequestContext.getUserFromRequestContextHolder().getUserId());
         final var subject = subjectEntityService.getById(subjectId);
         if (!user.getId().equals(subject.getUserId())) {
@@ -48,6 +53,9 @@ public class QuestionAnswerService extends GenericService<QuestionAnswerReqDto, 
 
 
     public QuestionAnswer update(QuestionAnswerReqDto updateReq, UUID id, UUID subjectId) {
+        if (updateReq.getAnswerImageUrl() != null && !storageService.isFilePathObjectExists(updateReq.getAnswerImageUrl())) {
+            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Answer image url does not exists");
+        }
         final var user = userService.getById(RequestContext.getUserFromRequestContextHolder().getUserId());
         final var subject = subjectEntityService.getById(subjectId);
         if (!user.getId().equals(subject.getUserId())) {

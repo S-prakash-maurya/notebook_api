@@ -1,9 +1,11 @@
 package com.micro.auth.controller;
 
 import com.generic.service.dto.GenericPaginationRes;
+import com.generic.service.exception.GenericException;
 import com.generic.service.util.RequestContext;
 import com.micro.auth.dto.req.SubjectEntityReqDto;
 import com.micro.auth.entity.SubjectEntity;
+import com.micro.auth.service.StorageService;
 import com.micro.auth.service.SubjectEntityService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -27,16 +29,23 @@ import java.util.UUID;
 @RequestMapping("/subject")
 @AllArgsConstructor
 public class SubjectController {
+    private final StorageService storageService;
     private final SubjectEntityService subjectEntityService;
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody SubjectEntityReqDto subjectEntityReqDto) {
+        if (subjectEntityReqDto.getIcon() != null && !storageService.isFilePathObjectExists(subjectEntityReqDto.getIcon())) {
+            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Icon does not exists");
+        }
         subjectEntityReqDto.setUserId(RequestContext.getUserFromRequestContextHolder().getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(subjectEntityService.create(subjectEntityReqDto));
     }
 
     @PutMapping("/{subjectId}")
     public ResponseEntity<?> update(@PathVariable("subjectId") UUID id, @Valid @RequestBody SubjectEntityReqDto subjectEntityReqDto) {
+        if (subjectEntityReqDto.getIcon() != null && !storageService.isFilePathObjectExists(subjectEntityReqDto.getIcon())) {
+            throw new GenericException(HttpStatus.BAD_REQUEST.value(), "Icon does not exists");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(subjectEntityService.update(subjectEntityReqDto, id));
     }
 
