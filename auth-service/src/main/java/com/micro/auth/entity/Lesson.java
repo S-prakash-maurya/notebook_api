@@ -27,6 +27,6 @@ public class Lesson extends GenericEntity {
     @Column(nullable = false)
     private UUID subjectId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 }

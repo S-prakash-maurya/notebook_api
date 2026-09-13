@@ -27,7 +27,7 @@ public class QuestionAnswer extends GenericEntity {
     @Column(nullable = false)
     private UUID lessonId;
 
-    @Column(nullable = false, unique = true, columnDefinition = "text")
+    @Column(nullable = false, columnDefinition = "text")
     private String question;
 
     @Column(columnDefinition = "text")
