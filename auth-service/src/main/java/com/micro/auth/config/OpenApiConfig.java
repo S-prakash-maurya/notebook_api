@@ -15,8 +15,8 @@ public class OpenApiConfig {
     public OpenAPI authServiceOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Auth Service API")
-                        .description("Authentication and authorization APIs")
+                        .title("NoteBook backend Service API")
+                        .description("NoteBook backend Service API")
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Micro Services")))
