@@ -19,8 +19,6 @@ import java.util.UUID;
 @Entity
 @Table
 public class Note extends GenericEntity {
-    @Column(nullable = false)
-    private UUID NoteId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

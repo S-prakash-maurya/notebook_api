@@ -46,7 +46,7 @@ public class NoteService extends GenericService<CreateNoteRequest, NoteResponse,
         final var note = GenericMapper.map(createNoteRequest, Note.class);
 
         note.setUser(GenericMapper.map(user, UserEntity.class));
-        note.setNoteId(UUID.randomUUID());
+        note.setId(UUID.randomUUID());
         // IMPORTANT
         if (note.getNotePoints() != null) {
             note.getNotePoints().forEach(point -> point.setNote(note));
@@ -68,12 +68,7 @@ public class NoteService extends GenericService<CreateNoteRequest, NoteResponse,
                         .getUserFromRequestContextHolder()
                         .getUserId();
 
-        final Note note = noteRepository.findByIdAndUserIdAndDeletedFalse(noteId, currentUserId);
-
-        if (note == null) {
-            throw new GenericException(HttpStatus.NOT_FOUND.value(), "Note not found");
-        }
-
+        final Note note = noteRepository.findByIdAndUserIdAndDeletedFalse(noteId, currentUserId).orElseThrow(()-> new GenericException(HttpStatus.NOT_FOUND.value(), "Note not found"));
         if (request.getType() != null) {
             note.setType(request.getType());
         }
@@ -91,11 +86,12 @@ public class NoteService extends GenericService<CreateNoteRequest, NoteResponse,
                                 if (pointRequest.getId() != null) {
                                     point = note.getNotePoints()
                                             .stream()
-                                            .filter(existingPoint -> existingPoint.getNote().getNoteId().equals(pointRequest.getId()))
+                                            .filter(existingPoint -> existingPoint.getNote().getId().equals(pointRequest.getId()))
                                             .findFirst()
                                             .orElseThrow(() -> new GenericException(HttpStatus.NOT_FOUND.value(), "Note point not found"));
                                     if (pointRequest.getText() != null) {
-                                        point.setText(pointRequest.getText());
+                                        point.setText(pointRequest.getText()
+                                        );
                                     }
                                     if (pointRequest.getCompleted() != null) {
                                         point.setCompleted(pointRequest.getCompleted());
