@@ -4,6 +4,7 @@ import com.micro.auth.enums.NoteType;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter

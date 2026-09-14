@@ -5,6 +5,7 @@ import com.micro.auth.enums.NoteType;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NoteResponse {
-
+    private UUID id;
     private NoteType type;
 
     private String content;

@@ -15,14 +15,15 @@ import lombok.experimental.Accessors;
 @Entity
 @Table
 public class NotePoint extends GenericEntity {
+
     @Column(nullable = false)
     private String text;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean completed = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "note_id", nullable = false)
     private Note note;
-
 }

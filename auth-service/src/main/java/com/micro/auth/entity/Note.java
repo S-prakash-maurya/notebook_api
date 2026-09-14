@@ -30,10 +30,12 @@ public class Note extends GenericEntity {
     @Column(nullable = false)
     private NoteType type;
 
+    private String content;
+
     @OneToMany(
             mappedBy = "note",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<NotePoint> notePoints;
-
 }
