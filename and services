@@ -1,0 +1,56 @@
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/App.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/config/OpenApiConfig.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/config/SecurityConfig.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/constants/Constants.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/controller/AuthenticationController.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/controller/LessonController.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/controller/NoteController.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/controller/QuestionAnswerController.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/controller/StorageController.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/controller/SubjectController.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/controller/UserController.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/GenericLoggedInUserDataImpl.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/CreateNoteRequest.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/LessonReqDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/LoginReqDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/NotePointRequest.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/QuestionAnswerReqDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/RefreshTokenReqDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/SubjectEntityReqDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/req/UserReqDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/res/NoteResponse.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/res/TokenResDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/dto/res/UserResDto.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/entity/JwtTokenEntity.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/entity/Lesson.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/entity/Note.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/entity/NotePoint.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/entity/QuestionAnswer.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/entity/SubjectEntity.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/entity/UserEntity.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/enums/NoteType.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/enums/UserRole.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/enums/UserStatus.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/filter/JwtAuthenticationFilter.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/properties/ApplicationProperties.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/repository/JwtTokenRepository.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/repository/LessonRepository.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/repository/NoteRepository.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/repository/QuestionAnswerRepository.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/repository/SubjectRepository.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/repository/UserRepository.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/AuthenticationService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/JwtTokenProvider.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/JwtTokenService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/LessonService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/NoteService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/QuestionAnswerService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/StorageService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/SubjectEntityService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/UserService.java', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'auth-service/src/main/java/com/micro/auth/service/impl/FileStorageService.java', LF will be replaced by CRLF the next time Git touches it
+ .../com/micro/auth/dto/req/CreateNoteRequest.java  |  8 [32m+++[m
+ .../java/com/micro/auth/dto/res/NoteResponse.java  | 22 [32m++++++[m[31m--[m
+ .../src/main/java/com/micro/auth/entity/Note.java  | 12 [32m+++++[m
+ .../java/com/micro/auth/service/NoteService.java   | 61 [32m++++++++++++++++++++[m[31m--[m
+ 4 files changed, 95 insertions(+), 8 deletions(-)

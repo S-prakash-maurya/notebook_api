@@ -14,7 +14,15 @@ import java.util.UUID;
 public class CreateNoteRequest {
     private NoteType type;
 
+    private String title;
+
     private String content;
+
+    private String colorValue;
+
+    private Boolean isPinned;
+
+    private Boolean isFavorite;
 
     private List<NotePointRequest> points;
 }

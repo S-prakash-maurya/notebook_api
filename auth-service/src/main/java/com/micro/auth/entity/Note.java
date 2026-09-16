@@ -28,7 +28,19 @@ public class Note extends GenericEntity {
     @Column(nullable = false)
     private NoteType type;
 
+    private String title;
+
     private String content;
+
+    private String colorValue;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean pinned = false;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean favorite = false;
 
     @OneToMany(
             mappedBy = "note",
